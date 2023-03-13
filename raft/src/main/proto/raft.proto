@@ -1,0 +1,43 @@
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "lvc.cds.raft.proto";
+option java_outer_classname = "RaftProto";
+option objc_class_prefix = "Raft";
+
+import "google/protobuf/empty.proto";
+package raftproto;
+
+// messages a leader can receive
+service RaftRPC {
+  rpc appendEntries (AppendEntriesMessage) returns (Response) {}
+  rpc requestVote (RequestVoteMessage) returns (Response) {}
+  rpc clientRequest (ClientMessage) returns (google.protobuf.Empty) {}
+}
+
+message ClientMessage {
+  string log = 1;
+}
+
+message AppendEntriesMessage {
+  int32 term = 1;
+  string leaderID = 2;
+  int32 prevLogIdx = 3;
+  int32 prevLogTerm = 4;
+  repeated string entries = 5;
+
+  int32 leaderCommitIdx = 6;
+}
+
+message RequestVoteMessage {
+  int32 term = 1;
+  string candidateID = 2;
+  int32 lastLogIndex = 3;
+  int32 lastLogTerm = 4;
+}
+
+message Response {
+  int32 term = 1;
+  bool success = 2;
+}
